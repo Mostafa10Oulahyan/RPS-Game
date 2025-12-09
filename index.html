@@ -1,90 +1,133 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Al-Qur'ān Al-Karīm</title>
+    <title>Rock Paper Scissors • Interactive Game</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="container">
-      <header>
-        <div class="header-icon">📖</div>
-        <h1>Al-Qur'ān Al-Karīm</h1>
-        <p class="surah-count">Nombre de sourates : 114</p>
+    <div class="particle-bg" id="particles"></div>
+
+    <main class="game-container">
+      <header class="game-header">
+        <h1 class="game-title">
+          <span class="title-word">Rock</span>
+          <span class="title-separator">•</span>
+          <span class="title-word">Paper</span>
+          <span class="title-separator">•</span>
+          <span class="title-word">Scissors</span>
+        </h1>
+        <p class="game-subtitle">Creative • Interactive • No Images</p>
       </header>
 
-      <div class="controls">
-        <div class="select-wrapper">
-          <select id="reciterSelect">
-            <option value="AbdulBaset_AbdulSamad">AbdulBaset AbdulSamad</option>
-            <option value="Abdul_Basit_Murattal">Abdul Basit Murattal</option>
-            <option value="Abdur_Rahman_as-Sudais">
-              Abdur-Rahman as-Sudais
-            </option>
-            <option value="Mishary_Rashid_Alafasy">
-              Mishary Rashid Alafasy
-            </option>
-            <option value="Sa'ud_ash-Shuraym">Sa'ud ash-Shuraym</option>
-          </select>
+      <section class="scoreboard">
+        <div class="score-card player-card">
+          <div class="score-icon">👤</div>
+          <div class="score-label">You</div>
+          <div class="score-value" id="player-score">0</div>
         </div>
 
-        <div class="search-wrapper">
-          <input
-            type="text"
-            id="searchInput"
-            placeholder="Rechercher une sourate"
-          />
-        </div>
-
-        <div class="select-wrapper">
-          <select id="sortSelect">
-            <option value="original">Trier par longueur</option>
-            <option value="shortest">Plus courtes d'abord</option>
-            <option value="longest">Plus longues d'abord</option>
-          </select>
-        </div>
-
-        <button class="surprise-btn" id="surpriseBtn">Surprends-moi 😊</button>
-      </div>
-
-      <div class="loaded-message" id="loadedMessage">
-        Sourates chargées pour
-        <span id="reciterName">AbdulBaset AbdulSamad</span>.
-      </div>
-
-      <div id="loading" class="loading">Chargement...</div>
-      <div id="error" class="error" style="display: none"></div>
-
-      <div id="surahContainer" class="surah-container">
-        <!-- Surahs will be loaded here -->
-      </div>
-
-      <div class="pagination" id="pagination">
-        <button id="prevBtn" class="page-btn">← Précédent</button>
-        <div id="pageNumbers" class="page-numbers"></div>
-        <button id="nextBtn" class="page-btn">Suivant →</button>
-      </div>
-
-      <!-- Surprise Modal -->
-      <div id="surpriseModal" class="modal">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h2>Sourate surprise</h2>
-          </div>
-          <div class="modal-body">
-            <div id="surpriseContent">
-              <p class="surprise-number" id="surpriseNumber"></p>
-              <h3 id="surpriseName"></h3>
-              <p id="surpriseReciter"></p>
-              <p id="surpriseVerses"></p>
-            </div>
-            <audio id="surpriseAudio" controls></audio>
+        <div class="score-card vs-card">
+          <div class="vs-text">VS</div>
+          <div class="round-counter">
+            Round <span id="round-number">1</span>
           </div>
         </div>
-      </div>
-    </div>
 
-    <script src="script.js"></script>
+        <div class="score-card computer-card">
+          <div class="score-icon">🤖</div>
+          <div class="score-label">CPU</div>
+          <div class="score-value" id="computer-score">0</div>
+        </div>
+      </section>
+
+      <section class="battle-arena" id="battle-arena">
+        <div class="choice-display player-choice">
+          <div class="choice-emoji" id="player-choice-emoji">❓</div>
+          <div class="choice-name">Your Choice</div>
+        </div>
+
+        <div class="battle-result" id="battle-result">
+          <div class="result-text">Make your move!</div>
+        </div>
+
+        <div class="choice-display computer-choice">
+          <div class="choice-emoji" id="computer-choice-emoji">❓</div>
+          <div class="choice-name">CPU Choice</div>
+        </div>
+      </section>
+
+      <section class="controls">
+        <div class="choice-buttons" id="choice-buttons">
+          <button class="choice-btn" data-choice="rock" title="Press R">
+            <span class="btn-emoji">✊</span>
+            <span class="btn-label">Rock</span>
+            <span class="btn-key">R</span>
+          </button>
+
+          <button class="choice-btn" data-choice="paper" title="Press P">
+            <span class="btn-emoji">✋</span>
+            <span class="btn-label">Paper</span>
+            <span class="btn-key">P</span>
+          </button>
+
+          <button class="choice-btn" data-choice="scissors" title="Press S">
+            <span class="btn-emoji">✌️</span>
+            <span class="btn-label">Scissors</span>
+            <span class="btn-key">S</span>
+          </button>
+        </div>
+
+        <div class="action-buttons">
+          <button class="action-btn reset-btn" id="reset-btn">
+            <span>🔄</span> Reset Game
+          </button>
+          <button class="action-btn settings-btn" id="settings-btn">
+            <span>⚙️</span> Settings
+          </button>
+        </div>
+      </section>
+
+      <div class="settings-panel" id="settings-panel">
+        <h3>Game Settings</h3>
+        <div class="setting-item">
+          <label for="win-target">Wins to Victory:</label>
+          <select id="win-target">
+            <option value="3">3 Wins</option>
+            <option value="5" selected>5 Wins</option>
+            <option value="7">7 Wins</option>
+            <option value="10">10 Wins</option>
+          </select>
+        </div>
+        <div class="setting-item">
+          <label>
+            <input type="checkbox" id="sound-toggle" checked />
+            Sound Effects (text)
+          </label>
+        </div>
+        <div class="setting-item">
+          <label>
+            <input type="checkbox" id="animation-toggle" checked />
+            Animations
+          </label>
+        </div>
+        <button class="close-settings" id="close-settings">✕ Close</button>
+      </div>
+
+      <footer class="game-footer">
+        <p class="keyboard-hint">
+          <strong>Keyboard Shortcuts:</strong>
+          <kbd>R</kbd> Rock • <kbd>P</kbd> Paper • <kbd>S</kbd> Scissors •
+          <kbd>Space</kbd> Reset
+        </p>
+      </footer>
+    </main>
+
+    <div class="confetti-container" id="confetti-container"></div>
+    <div class="toast" id="toast"></div>
+    
+
+    <script src="app.js"></script>
   </body>
 </html>
